@@ -15,7 +15,7 @@ namespace CPUClocker.Models
         public HardwareMonitor(int interval, int timeOut, string machineName, string userName, List<string> selectedHardware)
         {
             Interval = interval;
-            TimeOut = timeOut * 1000;
+            TimeOut = timeOut * 1000 * 60;
             MachineName = machineName;
             UserName = userName;
             SelectedHardware = selectedHardware;
@@ -68,7 +68,8 @@ namespace CPUClocker.Models
                 var timeCount = 0;
                 while (timeCount < TimeOut)
                 {
-                    Console.WriteLine($"Time ellapsed: {timeCount}");
+                    if (timeCount % (1000 * 60) == 0) Console.WriteLine($"Time ellapsed: {timeCount % (1000 * 60)} min");
+
                     if (Computer.CPUEnabled == true) Monitor(HardwareType.CPU);
                     if (Computer.RAMEnabled == true) Monitor(HardwareType.RAM);
                     if (Computer.GPUEnabled == true) Monitor(HardwareType.GpuAti);

@@ -1,5 +1,6 @@
 ﻿using CPUClocker.Common;
 using CPUClocker.Models;
+using CPUClocker.Services;
 using System;
 using System.Collections.Generic;
 
@@ -7,23 +8,24 @@ namespace CPUClocker
 {
     class Program
     {
-        private static int DEFAULT_TIMEOUT = 10000;
-        private static int DEFAULT_INTERVAL = 1000;
-
-        static void Main(string[] args)
+        static async void Main(string[] args)
         {
             Console.WriteLine("Init program");
 
             try
             {
-                var computerName = "Dell B2317H"; // Environment.MachineName;
-                var userName = "BSS"; // Environment.UserName;
-                var selectedHardware = new List<string> { Const.INFLUX_CPU, Const.INFLUX_RAM, Const.INFLUX_HDD, Const.INFLUX_GPU, Const.INFLUX_MAIN };
+                // load all config
+                await AppConfigService.Load();
+                // load current name if default names
+                if (AppConfig.ComputerName == "Computer Name") AppConfig.ComputerName = Environment.MachineName;
+                if (AppConfig.UserName == "User Name") AppConfig.UserName = Environment.UserName;
 
-                Console.WriteLine($"DEFAULT_TIMEOUT {DEFAULT_TIMEOUT}s");
-                Console.WriteLine($"DEFAULT_INTERVAL {DEFAULT_INTERVAL}ms");
+                // write monitoring data
+                Console.WriteLine($"Monitoring {AppConfig.UserName}'s {AppConfig.ComputerName}...");
+                Console.WriteLine($"Sending data each {AppConfig.Interval}ms for {AppConfig.Timeout}min(s)");
+                Console.WriteLine($"Using kafka: {AppConfig.UsingKafka}");
 
-                var monitor = new HardwareMonitor(DEFAULT_INTERVAL, DEFAULT_TIMEOUT, computerName, userName, selectedHardware);
+                var monitor = new HardwareMonitor(AppConfig.Timeout, AppConfig.Interval, AppConfig.ComputerName, AppConfig.UserName, AppConfig.MonitorHardwares);
                 monitor.Start();
             }
             catch (Exception err)

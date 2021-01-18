@@ -10,11 +10,6 @@ namespace CPUClocker.Services
 {
     class InfluxService
     {
-        private static string host = "http://localhost:8086";
-        private static string db = "cpuclocker";
-        private static string user = "influxdb";
-        private static string pass = "password";
-
         public async static Task<LineProtocolWriteResult> UploadInflux(LineProtocolPoint[] protocolPoints)
         {
             var payload = new LineProtocolPayload();
@@ -37,7 +32,7 @@ namespace CPUClocker.Services
 
         public async static Task<LineProtocolWriteResult> UploadInflux(LineProtocolPayload payload)
         {
-            var client = new LineProtocolClient(new Uri(host), db, user, pass);
+            var client = new LineProtocolClient(new Uri(AppConfig.InfluxHost), AppConfig.InfluxDb, AppConfig.InfluxUser, AppConfig.InfluxPassword);
             var result = await client.WriteAsync(payload);
             return result;
         }

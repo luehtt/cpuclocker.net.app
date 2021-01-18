@@ -1,4 +1,5 @@
 ﻿using Confluent.Kafka;
+using CPUClocker.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,16 +9,22 @@ namespace CPUClocker.Services
 {
     class KafkaService
     {
-        private static string host = "http://localhost:9092";
-        private static string topic = "cpuclocker";
 
-        private static ProducerConfig config = new ProducerConfig { BootstrapServers = host };
+        private static ProducerConfig config = new ProducerConfig { BootstrapServers = AppConfig.KafkaServer };
 
-        private static async Task Produce(string topic)
+        private static async Task Produce(string message)
+        {
+            using (var producer = new ProducerBuilder<Ignore, string>(config).Build())
+            {
+                producer.Produce(AppConfig.KafkaTopic, new Message<Ignore, string> { Value = message });
+            }
+        }
+
+        private static async Task Consume()
         {
             using (var consumer = new ConsumerBuilder<Ignore, string>(config).Build())
             {
-                consumer.Subscribe(topic);
+                consumer.Subscribe(AppConfig.KafkaTopic);
             }
         }
     }
