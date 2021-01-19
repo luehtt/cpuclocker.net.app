@@ -1,5 +1,6 @@
 ﻿using Confluent.Kafka;
 using CPUClocker.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,9 +11,11 @@ namespace CPUClocker.Services
     class KafkaService
     {
 
-        private static ProducerConfig config = new ProducerConfig { BootstrapServers = AppConfig.KafkaServer };
+        private static ProducerConfig config = new ProducerConfig { 
+            BootstrapServers = AppConfig.KafkaServer
+        };
 
-        private static async Task Produce(string message)
+        public static void ProduceMessage(string message)
         {
             using (var producer = new ProducerBuilder<Ignore, string>(config).Build())
             {
@@ -20,11 +23,29 @@ namespace CPUClocker.Services
             }
         }
 
-        private static async Task Consume()
+        public static void ProduceMessage(IEnumerable<string> messages)
+        {
+            using (var producer = new ProducerBuilder<Ignore, string>(config).Build())
+            {
+                foreach (var message in messages)
+                {
+                    producer.Produce(AppConfig.KafkaTopic, new Message<Ignore, string> { Value = message });
+                }
+            }
+        }
+
+        public static void ConsumeMessage()
         {
             using (var consumer = new ConsumerBuilder<Ignore, string>(config).Build())
             {
                 consumer.Subscribe(AppConfig.KafkaTopic);
+
+                while (true)
+                {
+                    var result = consumer.Consume();
+                    _ = InfluxService.UploadInflux(result.Message.Value);
+                    consumer.Commit();
+                }
             }
         }
     }

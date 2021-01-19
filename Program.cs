@@ -26,7 +26,8 @@ namespace CPUClocker
                 Console.WriteLine($"Using kafka: {AppConfig.UsingKafka}");
 
                 var monitor = new HardwareMonitor(AppConfig.Timeout, AppConfig.Interval, AppConfig.ComputerName, AppConfig.UserName, AppConfig.MonitorHardwares);
-                monitor.Start();
+                monitor.StartMonitor();
+                monitor.LoadKafka();
             }
             catch (Exception err)
             {

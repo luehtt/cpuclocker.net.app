@@ -1,6 +1,7 @@
 ﻿using CPUClocker.Common;
 using CPUClocker.Services;
 using InfluxDB.LineProtocol.Payload;
+using Newtonsoft.Json;
 using OpenHardwareMonitor.Hardware;
 using System;
 using System.Collections.Generic;
@@ -27,10 +28,23 @@ namespace CPUClocker.Models
         public string MachineName { get; set; }
         public string UserName { get; set; }
         public List<string> SelectedHardware { get; private set; }
-        
-        private Computer Computer;
+        public Computer Computer { get; private set; }
 
-        public void Start()
+
+        public void LoadKafka()
+        {
+            if (AppConfig.UsingKafka == false) return;
+            // task run monitor
+            Task.Run(async () => {
+                while (true)
+                {
+                    KafkaService.ConsumeMessage();
+                    await Task.Delay(Interval);
+                }
+            });
+        }
+
+        public void StartMonitor()
         {
             Console.WriteLine("Open hardware...");
             Computer.Open();
@@ -68,7 +82,7 @@ namespace CPUClocker.Models
                 var timeCount = 0;
                 while (timeCount < TimeOut)
                 {
-                    if (timeCount % (1000 * 60) == 0) Console.WriteLine($"Time ellapsed: {timeCount % (1000 * 60)} min");
+                    if (timeCount % 60_000 == 0) Console.WriteLine($"Time ellapsed: {timeCount / 60_000} min");
 
                     if (Computer.CPUEnabled == true) Monitor(HardwareType.CPU);
                     if (Computer.RAMEnabled == true) Monitor(HardwareType.RAM);
@@ -86,19 +100,41 @@ namespace CPUClocker.Models
         private void Monitor(HardwareType hardwareType)
         {
             var hardwares = Computer.Hardware.Where(x => x.HardwareType == hardwareType);
-            var dataPoints = new List<LineProtocolPoint>();
+            var infos = new List<HardwareInfo>();
             foreach (var hardware in hardwares)
             {
                 hardware.Update();
                 var info = new HardwareInfo(MachineName, UserName, hardware);
+                infos.Add(info);
+            }
+            
+            if (AppConfig.UsingKafka) MonitorKafka(infos);
+            else MonitorInflux(infos);
+        }
+
+        private void MonitorInflux(IEnumerable<HardwareInfo> infos)
+        {
+            var list = new List<LineProtocolPoint>();
+            foreach (var info in infos)
+            {
                 var point = InfluxService.ParseInfoToInfluxPoint(info);
                 if (point == null) continue;
-                dataPoints.Add(point);
+                list.Add(point);
             }
-            _ = InfluxService.UploadInflux(dataPoints);
+            _ = InfluxService.UploadInflux(list);
+        }
 
-            var hardwareName = HardwareInfo.GetHardwareTypeName(hardwareType);
-            var timestamp = DateTime.UtcNow;
+        private void MonitorKafka(IEnumerable<HardwareInfo> infos)
+        {
+            var list = new List<string>();
+            foreach (var info in infos)
+            {
+                var point = InfluxService.ParseInfoToInfluxPoint(info);
+                if (point == null) continue;
+                var message = JsonConvert.SerializeObject(point);
+                list.Add(message);
+            }
+            _ = KafkaService.ProduceMessage(list);
         }
 
         

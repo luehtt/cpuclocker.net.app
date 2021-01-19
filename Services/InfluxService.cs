@@ -2,6 +2,7 @@
 using CPUClocker.Models;
 using InfluxDB.LineProtocol.Client;
 using InfluxDB.LineProtocol.Payload;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -35,6 +36,27 @@ namespace CPUClocker.Services
             var client = new LineProtocolClient(new Uri(AppConfig.InfluxHost), AppConfig.InfluxDb, AppConfig.InfluxUser, AppConfig.InfluxPassword);
             var result = await client.WriteAsync(payload);
             return result;
+        }
+
+        public async static Task<LineProtocolWriteResult> UploadInflux(LineProtocolPoint protocolPoint)
+        {
+            var payload = new LineProtocolPayload();
+            payload.Add(protocolPoint);
+            return await UploadInflux(payload);
+        }
+
+        public async static Task<LineProtocolWriteResult> UploadInflux(string stringMessage)
+        {
+            try
+            {
+                var point = JsonConvert.DeserializeObject<LineProtocolPoint>(stringMessage);
+                return await UploadInflux(point);
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine(err.ToString());
+                return new LineProtocolWriteResult(false, err.ToString());
+            }
         }
 
         public static LineProtocolPoint ParseInfoToInfluxPoint(HardwareInfo info)
