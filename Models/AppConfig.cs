@@ -14,9 +14,9 @@ namespace CPUClocker.Models
         public static string InfluxUser = "influxdb";
         public static string InfluxPassword = "password";
 
-        public static string KafkaServer = "http://localhost:9092";
-        public static string KafkaTopic = "cpuclocker";
-        public static bool UsingKafka = false;
+        public static string KafkaServer = "PLAINTEXT://localhost:9092";
+        public static string KafkaTopic = "KafkaTopic";
+        public static bool UsingKafka = true;
 
         public static int Timeout = 60; // 60m = 1hr
         public static int Interval = 1000; // 1s

@@ -1,25 +1,26 @@
-﻿using CPUClocker.Common;
-using CPUClocker.Services;
-using InfluxDB.LineProtocol.Payload;
+﻿using InfluxDB.LineProtocol.Payload;
 using Newtonsoft.Json;
 using OpenHardwareMonitor.Hardware;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
+using CPUClocker.Common;
+using CPUClocker.Services;
 
 namespace CPUClocker.Models
 {
     public class HardwareMonitor
     {
-        public HardwareMonitor(int interval, int timeOut, string machineName, string userName, List<string> selectedHardware)
+        public HardwareMonitor(int interval, int timeOut, string machineName, string userName, List<string> selectedHardware, bool usingKafka)
         {
             Interval = interval;
             TimeOut = timeOut * 1000 * 60;
             MachineName = machineName;
             UserName = userName;
             SelectedHardware = selectedHardware;
+            UsingKafka = usingKafka;
             Computer = new Computer();
         }
 
@@ -27,22 +28,9 @@ namespace CPUClocker.Models
         public int TimeOut { get; set; } // ms
         public string MachineName { get; set; }
         public string UserName { get; set; }
+        public bool UsingKafka { get; set; }
         public List<string> SelectedHardware { get; private set; }
         public Computer Computer { get; private set; }
-
-
-        public void LoadKafka()
-        {
-            if (AppConfig.UsingKafka == false) return;
-            // task run monitor
-            Task.Run(async () => {
-                while (true)
-                {
-                    KafkaService.ConsumeMessage();
-                    await Task.Delay(Interval);
-                }
-            });
-        }
 
         public void StartMonitor()
         {
@@ -82,7 +70,7 @@ namespace CPUClocker.Models
                 var timeCount = 0;
                 while (timeCount < TimeOut)
                 {
-                    if (timeCount % 60_000 == 0) Console.WriteLine($"Time ellapsed: {timeCount / 60_000} min");
+                    Console.WriteLine($"Time ellapsed: {timeCount / 1000}s");
 
                     if (Computer.CPUEnabled == true) Monitor(HardwareType.CPU);
                     if (Computer.RAMEnabled == true) Monitor(HardwareType.RAM);
@@ -99,17 +87,25 @@ namespace CPUClocker.Models
 
         private void Monitor(HardwareType hardwareType)
         {
-            var hardwares = Computer.Hardware.Where(x => x.HardwareType == hardwareType);
-            var infos = new List<HardwareInfo>();
-            foreach (var hardware in hardwares)
+            try
             {
-                hardware.Update();
-                var info = new HardwareInfo(MachineName, UserName, hardware);
-                infos.Add(info);
+                var hardwares = Computer.Hardware.Where(x => x.HardwareType == hardwareType);
+                var infos = new List<HardwareInfo>();
+                foreach (var hardware in hardwares)
+                {
+                    hardware.Update();
+                    var info = new HardwareInfo(MachineName, UserName, hardware);
+                    infos.Add(info);
+                }
+
+                if (UsingKafka) MonitorKafka(infos);
+                else MonitorInflux(infos);
+            } 
+            catch (Exception err)
+            {
+                Console.WriteLine(err.ToString());
             }
             
-            if (AppConfig.UsingKafka) MonitorKafka(infos);
-            else MonitorInflux(infos);
         }
 
         private void MonitorInflux(IEnumerable<HardwareInfo> infos)
@@ -134,7 +130,8 @@ namespace CPUClocker.Models
                 var message = JsonConvert.SerializeObject(point);
                 list.Add(message);
             }
-            _ = KafkaService.ProduceMessage(list);
+
+            KafkaService.ProduceMessage(list);
         }
 
         

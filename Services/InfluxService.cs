@@ -1,11 +1,12 @@
-﻿using CPUClocker.Common;
-using CPUClocker.Models;
-using InfluxDB.LineProtocol.Client;
+﻿using InfluxDB.LineProtocol.Client;
 using InfluxDB.LineProtocol.Payload;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using CPUClocker.Common;
+using CPUClocker.Models;
 
 namespace CPUClocker.Services
 {

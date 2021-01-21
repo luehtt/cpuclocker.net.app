@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+
 using CPUClocker.Models;
 
 namespace CPUClocker.Services
@@ -16,7 +15,7 @@ namespace CPUClocker.Services
         {
             try
             {
-                using (var reader = new StreamReader("appConfig.json"))
+                using (var reader = new StreamReader("AppConfig.json"))
                 {
                     var data = await reader.ReadToEndAsync();
                     var config = JsonConvert.DeserializeObject<AppConfigReader>(data);

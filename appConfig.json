@@ -1,0 +1,17 @@
+﻿{
+  "InfluxHost": "http://localhost:8086",
+  "InfluxDb": "cpuclocker",
+  "InfluxUser": "influxdb",
+  "InfluxPassword": "password",
+
+  "KafkaServer": "PLAINTEXT://localhost:9092",
+  "KafkaTopic": "cpuclocker",
+  "UsingKafka": true,
+
+  "Timeout": 60, // min
+  "Interval": 1000, // ms
+  "ComputerName": "",
+  "UserName": "",
+
+  "MonitorHardwares": "CPU RAM GPU HDD MainBoard"
+}
