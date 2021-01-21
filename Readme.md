@@ -10,7 +10,7 @@ Github: http://github.com/luehtt\
 1. Download and Install **.NET Runtime**.
  [Download .NET 5.0 (Linux, macOS, and Windows) ](https://dotnet.microsoft.com/download/dotnet/5.0)\
 Please note that the right link is in the right under **Run apps - Runtime**.\
-Can either **.NET Desktop Runtime** or **.NET Runtime** since this app in an **Console app**.\
+Can either **.NET Desktop Runtime** or **.NET Runtime** since this app in an **Console app**.
 
 ### Install InfluxDb
 1. Download and Extract it to somewhere such as D:\Lib\influxDb.
@@ -18,7 +18,7 @@ Can either **.NET Desktop Runtime** or **.NET Runtime** since this app in an **C
 `dir = "/var/lib/influxdb/meta"`\
 `dir = "/var/lib/influxdb/data"`\
 `wal-dir = "/var/lib/influxdb/wal"`\
-The default location for that is C:\Users\{PCName}\.influxdb.\
+The default location for that is C:\Users\{PCName}\.influxdb.
 3. Open influxd.exe to start InfluxDB server and let it running.
 4. Open influx.exe to connect to InfluxDB server.
 5. Enter this command to create user influxDB with all privileges.\
