@@ -1,5 +1,5 @@
 # CPUClocker
-CPUClocker is a console app to monitor computer running Windows using .NET 5.0, InfluxDb, and Kafka\
+CPUClocker is a console app to monitor computer running Windows using .NET 5.0, InfluxDb, and Kafka.\
 Coder: thanhtoan.inu@gmail.com\
 Github: http://github.com/luehtt\
   
@@ -32,25 +32,25 @@ The default location for that is C:\Users\{PCName}\.influxdb.\
 Installing Kafka is optional, the program can be run without it.
 1. Download and Extract it to somewhere such as D:\Lib\kafka.
 [Apache Kafka - Download](https://kafka.apache.org/downloads)
-2. Open \config\zookeeper.properties and edit these line.
-`dataDir=D:\Lib\kafka\zookeeper`
+2. Open \config\zookeeper.properties and edit these line.\
+`dataDir=D:\Lib\kafka\zookeeper`\
 Create the folder zookeeper if there is not.
-3. Open \config\server.properties and edit these line.
-`log.dirs=D:\Git\kafka\logs`
-Create the folder logs if there is not. Add this line to config Kafka host
+3. Open \config\server.properties and edit these line.\
+`log.dirs=D:\Git\kafka\logs`\
+Create the folder logs if there is not. Add this line to config Kafka host.\
 `listeners=PLAINTEXT://localhost:9092`
 4. Download Java SE Runtime Environment 8 and Install.\
-Kafka running depend on Java.
+Kafka running depend on Java.\
 [Java SE Runtime Environment 8 - Downloads](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)
 
 # Running
 1. Open influxd.exe to start InfluxDB server and let it running.
-2. Open cmd, go to kafka installed folder, start zookeeper server, and let it running.
-`D:`
-`cd Lib/kafka/bin/windows`
+2. Open cmd, go to kafka installed folder, start zookeeper server, and let it running.\
+`D:`\
+`cd Lib/kafka/bin/windows`\
 `zookeeper-server-start.bat ../../config/zookeeper.properties`
-3. Do the same cmd, start kafka server, and let it running.
+3. Do the same cmd, start kafka server, and let it running.\
 `zookeeper-server-start.bat ../../config/server.properties`
 4. Open AppConfig.json in CPUClocker app folder and set these values.\
-If Kafka is not used, set UsingKafka to false
+If Kafka is not used, set UsingKafka to false.
 6. Run CPUClocker.exe and enjoy.
