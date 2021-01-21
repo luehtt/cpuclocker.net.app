@@ -9,8 +9,8 @@ Github: http://github.com/luehtt\
 ### Install .NET 5.0
 1. Download and Install **.NET Runtime**.
  [Download .NET 5.0 (Linux, macOS, and Windows) ](https://dotnet.microsoft.com/download/dotnet/5.0)
-Please note that the right link is in the right under **Run apps - Runtime**.
-Can either **.NET Desktop Runtime** or **.NET Runtime** since this app in an **Console app**.
+Please note that the right link is in the right under **Run apps - Runtime**.\
+Can either **.NET Desktop Runtime** or **.NET Runtime** since this app in an **Console app**.\
 
 ### Install InfluxDb
 1. Download and Extract it to somewhere such as D:\Lib\influxDb.
@@ -39,7 +39,7 @@ Create the folder zookeeper if there is not.
 `log.dirs=D:\Git\kafka\logs`
 Create the folder logs if there is not. Add this line to config Kafka host
 `listeners=PLAINTEXT://localhost:9092`
-4. Download Java SE Runtime Environment 8 and Install.
+4. Download Java SE Runtime Environment 8 and Install.\
 Kafka running depend on Java.
 [Java SE Runtime Environment 8 - Downloads](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)
 
@@ -51,6 +51,6 @@ Kafka running depend on Java.
 `zookeeper-server-start.bat ../../config/zookeeper.properties`
 3. Do the same cmd, start kafka server, and let it running.
 `zookeeper-server-start.bat ../../config/server.properties`
-4. Open AppConfig.json in CPUClocker app folder and set these values.
+4. Open AppConfig.json in CPUClocker app folder and set these values.\
 If Kafka is not used, set UsingKafka to false
 6. Run CPUClocker.exe and enjoy.
