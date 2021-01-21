@@ -1,7 +1,7 @@
 # CPUClocker
 CPUClocker is a console app to monitor computer running Windows using .NET 5.0, InfluxDb, and Kafka.\
 Coder: thanhtoan.inu@gmail.com\
-Github: http://github.com/luehtt\
+Github: http://github.com/luehtt
   
 
 # Installation
@@ -30,7 +30,7 @@ The default location for that is C:\Users\{PCName}\.influxdb.
 > Apache Kafka is an open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications.
 
 Installing Kafka is optional, the program can be run without it.
-1. Download and Extract it to somewhere such as D:\Lib\kafka.
+1. Download and Extract it to somewhere such as D:\Lib\kafka.\
 [Apache Kafka - Download](https://kafka.apache.org/downloads)
 2. Open \config\zookeeper.properties and edit these line.\
 `dataDir=D:\Lib\kafka\zookeeper`\
