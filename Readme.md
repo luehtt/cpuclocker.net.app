@@ -1,7 +1,7 @@
-﻿# CPUClocker
-CPUClocker is a console app to monitor computer running Windows using .NET 5.0, InfluxDb, and Kafka
-Coder: thanhtoan.inu@gmail.com
-Github: http://github.com/luehtt
+# CPUClocker
+CPUClocker is a console app to monitor computer running Windows using .NET 5.0, InfluxDb, and Kafka\
+Coder: thanhtoan.inu@gmail.com\
+Github: http://github.com/luehtt\
   
 
 # Installation
